@@ -4,27 +4,29 @@ import { Insurance, IPoints } from '../shared/dto';
 
 export class InsuranceService implements IService<Insurance> {
   execute(data: Entity): Insurance {
-    throw new Error('Method not implemented.');
+    return this.calcInsurance(data);
   }
 
-  private calcInsurance(data: Entity) {
-    let risk = {};
+  private calcInsurance(data: Entity): Insurance {
     const inelegible = this.calcInelegible(data);
+    const risk = this.mapRisk(this.calcRisk(data));
+
+    return { ...risk, ...inelegible };
   }
 
-  private calcInelegible(data: Entity) {
-    let inelegible = { 
+  private calcInelegible(data: Entity): Partial<Insurance> {
+    const inelegible = { 
       disability : 'eligible',
       auto : 'eligible',
       home : 'eligible',
-      lifeInsurance : 'eligible'
+      life : 'eligible'
     };
     if (!data.income) inelegible.disability = 'ineligible';
     if (!data.vehicle) inelegible.auto = 'ineligible';
     if (!data.house) inelegible.home = 'ineligible';
     if(data.age > 60) {
       inelegible.disability  = 'ineligible';
-      inelegible.lifeInsurance = 'ineligible';
+      inelegible.life = 'ineligible';
     }
 
     for(let i of Object.keys(inelegible)){
@@ -36,8 +38,8 @@ export class InsuranceService implements IService<Insurance> {
     return inelegible;
   }
 
-  private calcRisk(data: Entity){
-    let points = {lifeScore: 0, disabilityScore:0, homeScore: 0, autoScore: 0};
+  private calcRisk(data: Entity): IPoints{
+    let points = {life: 0, disability:0, home: 0, auto: 0};
     if(data.age < 30) {
       points = this.addPoints(points, 2);
     }
@@ -64,11 +66,24 @@ export class InsuranceService implements IService<Insurance> {
     return points;
   }
 
-  private mapRisk(data: IPoints){
-    
+  private mapRisk(data: IPoints): Insurance{
+    const props = { 
+      disability : 'eligible',
+      auto : 'eligible',
+      home : 'eligible',
+      life : 'eligible'
+    };
+
+    for(let i of Object.keys(data)){
+      if(data[i] <= 0) props[i] = 'economic';
+      if(data[i] === 1 || data[i] === 2) props[i] = 'regular';
+      if(data[i] >= 3) props[i] = 'responsible';
+    }
+
+    return props;
   }
 
-  private addPoints(data: IPoints, quantity: number, props: any[] = null) {
+  private addPoints(data: IPoints, quantity: number, props: any[] = null): IPoints {
     if(!props) {
       for(let i of Object.keys(data)) {
         data[i] += quantity;
