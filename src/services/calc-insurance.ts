@@ -74,7 +74,7 @@ export class InsuranceService implements IService<Insurance> {
       life: 'eligible',
     };
 
-    for (let i of Object.keys(data)) {
+    for (const i of Object.keys(data)) {
       if (data[i] <= 0) props[i] = 'economic';
       if (data[i] === 1 || data[i] === 2) props[i] = 'regular';
       if (data[i] >= 3) props[i] = 'responsible';
@@ -89,7 +89,7 @@ export class InsuranceService implements IService<Insurance> {
     props: any[] = null,
   ): IPoints {
     if (!props) {
-      for (let i of Object.keys(data)) {
+      for (const i of Object.keys(data)) {
         data[i] += quantity;
       }
       return data;

@@ -1,9 +1,13 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { InsuranceService } from '../../services/calc-insurance';
+import { Insurance } from '../../shared/dto';
 
 @Controller('/api/insurance')
 export class InsuranceController {
+  private readonly insuranceService = new InsuranceService();
+
   @Post()
-  public riskClients() {
-    return 'teste';
+  public riskClients(@Body() dataclients: any): Insurance {
+    return this.insuranceService.execute(dataclients);
   }
 }
