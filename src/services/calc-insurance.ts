@@ -1,4 +1,4 @@
-import { Entity, HouseStatus, MaritalStatus } from 'src/core/base/entity';
+import { Entity } from '../core/base/entity';
 import { IService } from '../core/base/service';
 import { Insurance, IPoints } from '../shared/dto';
 
@@ -7,7 +7,7 @@ export class InsuranceService implements IService<Insurance> {
     return this.calcInsurance(data);
   }
 
-  private calcInsurance(data: Entity): Insurance {
+  private calcInsurance(data: Entity): any {
     const inelegible = this.calcInelegible(data);
     const risk = this.mapRisk(this.calcRisk(data));
 
@@ -29,7 +29,7 @@ export class InsuranceService implements IService<Insurance> {
       inelegible.life = 'ineligible';
     }
 
-    for (let i of Object.keys(inelegible)) {
+    for (const i of Object.keys(inelegible)) {
       if (inelegible[i] !== 'ineligible') {
         Reflect.deleteProperty(inelegible, i);
       }
@@ -49,18 +49,18 @@ export class InsuranceService implements IService<Insurance> {
     if (data.income > 200000) {
       points = this.addPoints(points, 1);
     }
-    if (data.house.ownsership_status === HouseStatus.RENT) {
-      points = this.addPoints(points, 1, ['homeScore', 'disabilityScore']);
+    if (data.house.ownership_status === 'mortgaged') {
+      points = this.addPoints(points, 1, ['home', 'disability']);
     }
     if (data.dependents) {
-      points = this.addPoints(points, 1, ['lifeScore', 'disabilityScore']);
+      points = this.addPoints(points, 1, ['life', 'disability']);
     }
-    if (data.marital_status === MaritalStatus.MARRY) {
-      points = this.addPoints(points, 1, ['lifeScore']);
-      points = this.addPoints(points, -1, ['disabilityScore']);
+    if (data.marital_status === 'married') {
+      points = this.addPoints(points, 1, ['life']);
+      points = this.addPoints(points, -1, ['disability']);
     }
     if (new Date().getFullYear() - data.vehicle.year >= 5) {
-      points = this.addPoints(points, 1, ['autoScore']);
+      points = this.addPoints(points, 1, ['auto']);
     }
 
     return points;

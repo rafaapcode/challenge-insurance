@@ -1,11 +1,11 @@
-import { Entity, HouseStatus, MaritalStatus } from '../../base/entity';
+import { Entity } from '../../base/entity';
 
 export class UserEntity extends Entity {
   public age: number;
   public dependents: number;
-  public house: { ownsership_status: HouseStatus } | null;
+  public house: { ownership_status: string } | null;
   public income: number;
-  public marital_status: MaritalStatus;
-  public risk_questions: [number, number, number];
+  public marital_status: string;
+  public risk_questions: number[];
   public vehicle: { year: number } | null;
 }
