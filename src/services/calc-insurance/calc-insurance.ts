@@ -1,6 +1,6 @@
-import { Entity } from '../core/base/entity';
-import { IService } from '../core/base/service';
-import { Insurance, IPoints } from '../shared/dto';
+import { Entity } from '../../core/base/entity';
+import { IService } from '../../core/base/service';
+import { Insurance, IPoints } from '../../shared/dto';
 
 export class InsuranceService implements IService<Insurance> {
   execute(data: Entity): Insurance {

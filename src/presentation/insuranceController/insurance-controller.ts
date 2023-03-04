@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { InsuranceService } from '../../services/calc-insurance';
+import { InsuranceService } from '../../services/calc-insurance/calc-insurance';
 import { Insurance } from '../../shared/dto';
 
 @Controller('/api/insurance')
