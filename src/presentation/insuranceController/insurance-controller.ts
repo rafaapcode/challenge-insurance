@@ -7,7 +7,7 @@ export class InsuranceController {
   private readonly insuranceService = new InsuranceService();
 
   @Post()
-  public riskClients(@Body() dataclients: any): Insurance {
+  public riskClients(@Body() dataclients: any): Insurance | string {
     return this.insuranceService.execute(dataclients);
   }
 }
